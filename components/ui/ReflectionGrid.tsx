@@ -45,7 +45,7 @@ const ScheduleGrid = () => {
         </View>
         <View style={styles.grid}>
           {dates.map((date, dateIndex) => (
-            <View key={dateIndex} style={styles.column}>
+            <View key={dateIndex} >
               <Text style={styles.dateHeader}>{date}</Text>
               {hours.map((hour, hourIndex) => {
                 const offset = Math.floor(hourIndex / 4);

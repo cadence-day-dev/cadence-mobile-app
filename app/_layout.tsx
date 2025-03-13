@@ -37,9 +37,18 @@ export default function RootLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: 'PROFILE',
           tabBarLabel: ({ focused, color }) => (
-            <TabLabel focused={focused} color={color} label="PROILE" />
+            <TabLabel focused={focused} color={color} label="PROFILE" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="sandbox"
+        options={{
+          title: 'SANDBOX',
+          tabBarLabel: ({ focused, color }) => (
+            <TabLabel focused={focused} color={color} label="SANDBOX" />
           ),
         }}
       />

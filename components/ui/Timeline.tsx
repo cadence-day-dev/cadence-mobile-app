@@ -29,7 +29,6 @@ const Timeline: React.FC<timeLineProps> = ({ toggleNote }) => {
     <View
       style={{
         width: "100%",
-        height: "60%",
         marginVertical: 0,
         justifyContent: "center",
         alignItems: "center",
@@ -72,7 +71,7 @@ const Timeline: React.FC<timeLineProps> = ({ toggleNote }) => {
                 activeOpacity={1}
                 style={{
                   width: 45,
-                  height: 390,
+                  height: '90%',
                   borderWidth: 1,
                   borderColor: "#6646EC",
                   marginHorizontal: 2,

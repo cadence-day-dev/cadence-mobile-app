@@ -34,7 +34,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
             <Text style={styles.closeButtonText}>X</Text>
           </TouchableOpacity>
 
-          <View
+          {/* <View
             style={{
               width: "95%",
               flex: 1,
@@ -55,13 +55,26 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
             >
               Add a note
             </Text>
-          </View>
+          </View> */}
+            <Text
+              style={{
+                fontSize: 17,
+                color: "white",
+                marginBottom: 30,
+                width: "95%",
+                textAlign: "center",
+                borderBottomWidth: 0.5,
+                borderColor: "#FFFFFF",
+              }}
+            >
+              Add a note
+            </Text>
           <TextInput
             style={styles.input}
             placeholder="Type the note here..."
             multiline
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={toggleVisibility}
             style={{
               width: "95%",
@@ -70,8 +83,8 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
               alignItems: "center",
               marginBottom: 40,
             }}
-          >
-            <ThemedText
+          > */}
+            <Text
               style={{
                 width: "30%",
                 color: "#FFFF",
@@ -82,8 +95,8 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
               }}
             >
               Save a note
-            </ThemedText>
-          </TouchableOpacity>
+            </Text>
+          {/* </TouchableOpacity> */}
 
           <View style={styles.subtitleContainer}>
             <Text style={styles.subtitle}>What's your energy level? </Text>
@@ -138,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   dialog: {
-    width: "90%",
+    width: "80%",
     padding: 20,
     backgroundColor: "#151414",
     borderRadius: 10,
@@ -157,7 +170,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "95%",
-    height: 360,
+    height: 260,
     borderColor: "white",
     borderWidth: 0.5,
     padding: 20,

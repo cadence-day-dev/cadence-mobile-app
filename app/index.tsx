@@ -1,4 +1,4 @@
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import Header from "@/components/ui/Header";
 import Timeline from "@/components/ui/Timeline";
 import { useState } from "react";
@@ -10,13 +10,19 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
-      <Header title={"Day"} subTitle={"12/11/24 at 13:15"} />
-      <Timeline toggleNote={() => setShowNote(!showNote)} />
-      <ActivityContainer />
+      <View style={{height: "10%" }}>
+        <Header title={"Daily Cadence"} subTitle={"12/11/24 at 13:15"} />
+      </View>
+      <View style={{height: "60%" }}>
+        <Timeline toggleNote={() => setShowNote(!showNote)} />
+      </View>
+      <View style={{height: "24%" }}>
+        <ActivityContainer />
+      </View>
       <NoteDialog
         visible={showNote}
-        toggleVisibility={() => setShowNote(!showNote)}
-      />
+          toggleVisibility={() => setShowNote(!showNote)}
+        />
     </SafeAreaView>
   );
 } 

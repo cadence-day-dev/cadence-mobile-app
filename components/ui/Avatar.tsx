@@ -11,37 +11,19 @@ const Avatar = () => {
         justifyContent: "center",
         borderRadius: 5,
         alignSelf: "center",
-        borderColor: "#6646EC",
       }}
     >
       <Image
-        source={require("@/assets/images/Andrea.png")}
+        source={require("@/assets/images/Profile.png")}
         style={{
           position: "absolute",
-          top: 56,
           width: 80,
           height: 80,
           borderRadius: 50,
-          borderWidth: 1,
-          borderColor: "#6646EC",
         }}
       />
-      <ThemedText
+       <View
         style={{
-          position: "absolute",
-          top: 160,
-          fontSize: 11,
-          color: "#575453",
-          textAlign: "center",
-          letterSpacing: 1.3,
-          textTransform: "uppercase",
-        }}
-      >
-        Edit profile photo
-      </ThemedText>
-      <View
-        style={{
-          top: 16,
           width: 100,
           height: 100,
           borderRadius: 50,
@@ -50,6 +32,19 @@ const Avatar = () => {
           backgroundColor: "",
         }}
       />
+      <ThemedText
+        style={{
+          position: "absolute",
+          top: 140,
+          fontSize: 10,
+          color: "#575453",
+          textAlign: "center",
+          letterSpacing: 1.3,
+          textTransform: "uppercase",
+        }}
+      >
+        Edit profile photo
+      </ThemedText>
     </View>
   );
 };

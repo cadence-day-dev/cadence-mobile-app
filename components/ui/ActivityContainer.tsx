@@ -27,7 +27,6 @@ const ActivityContainer = () => {
     <View
       style={{
         width: "100%",
-        height: "24%",
         marginVertical: 2,
         paddingLeft: 12,
         paddingRight: 12,

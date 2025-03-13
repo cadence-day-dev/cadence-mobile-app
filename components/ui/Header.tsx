@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-unused-styles */
-import { View } from "react-native";
-// import Arrow from "@/components/ui/Arrow";
-// import Star from "@/components/ui/Star";
+import { View, Text } from "react-native";
+import Arrow from "@/components/ui/Arrow";
+import Star from "@/components/ui/Star";
 import { ThemedText } from "@/components/ThemedText";
 
 interface HeaderProps {
@@ -14,11 +14,10 @@ const Header: React.FC<HeaderProps> = ({ title, subTitle }) => {
     <View
       style={{
         width: "100%",
-        height: "10%",
-        marginTop: 20,
         justifyContent: "center",
         alignItems: "flex-start",
-        paddingLeft: 24,
+        marginTop: 14,
+        paddingLeft: 12,
         paddingRight: 10,
         position: "relative",
       }}
@@ -32,25 +31,31 @@ const Header: React.FC<HeaderProps> = ({ title, subTitle }) => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <ThemedText
+          <Text
             style={{
-              fontSize: 17,
+              fontSize: 15,
               color: "#575453",
+              letterSpacing: 1.7,
             }}
           >
-            Pattern of your{" "}
-          </ThemedText>
-          <ThemedText
+            Your{" "}
+          </Text>
+          <Text
             style={{
               fontSize: 17,
               color: "black",
+              letterSpacing: 1.7,
             }}
           >
             {title}
-          </ThemedText>
-          {/* <Arrow /> */}
+          </Text>  
+          <View style={{ marginTop: 3, marginLeft: 4 }}>
+            <Arrow/>
+          </View>
         </View>
-        {/* <Star /> */}
+        <View style={{ position: 'absolute', right: 6, top: 1 }}>
+          <Star />
+        </View>
       </View>
       <ThemedText
         style={{

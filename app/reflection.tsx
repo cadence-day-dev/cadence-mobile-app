@@ -1,10 +1,19 @@
-import { View } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
+import { SafeAreaView, View } from "react-native";
+import ScheduleGrid from "@/components/ui/ReflectionGrid";
+import Header from "@/components/ui/Header";
 
 export default function ReflectionScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ThemedText>Home Screen</ThemedText>
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
+      <Header title={"Weekly Cadence"} subTitle={"02/11/24 to 08/11/24"} />
+      <View
+        style={{
+          height: "88%",
+          width: "100%",
+        }}
+      >
+        <ScheduleGrid />
+      </View>
+    </SafeAreaView>
   );
 }
