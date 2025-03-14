@@ -32,10 +32,10 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
     "#CD5C5C",
     "#8B4513",
     "#D3D3D3",
-    "#4682B4",
-    "#B0C4DE",
+    // "#4682B4",
+    // "#B0C4DE",
     "#FFA500",
-    "#FFFACD",
+    "transparent",
   ];
 
   return (
@@ -45,38 +45,106 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.dialog}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={toggleVisibility}
-          >
-            <Text style={styles.closeButtonText}>X</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Edit Activities</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Type the activity name"
-            placeholderTextColor="#A9A9A9"
-          />
+        <TouchableOpacity
+              onPress={toggleVisibility} 
+              style={{
+                position: "absolute",
+                top: 24,
+                right: 26,
+                zIndex: 1000,
+              }}
+            >
+              <Text style={{
+                color: "white",
+                fontSize: 12,
+              }}>X</Text>
+            </TouchableOpacity>
+          <View style={{
+            flexDirection: "row", 
+            justifyContent: "center", 
+            alignItems: "center", 
+            width: "95%",
+            borderBottomWidth: .2,
+            borderColor: "#FFFFFF",
+            paddingBottom: 10,
+            marginBottom: 10,
+          }}
+            >
+            <Text
+              style={{
+                fontSize: 17,
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              Edit the activity
+            </Text>
+          </View>
           <View style={{ width: "85%", marginTop: 30, marginBottom: 10 }}>
-            <Text style={styles.subtitle}>Choose activity color</Text>
+            <Text style={{
+              fontSize: 12,
+              color: "white",
+              marginBottom: 20,
+              alignSelf: "flex-start",
+            }}>Press and hold to edit or remove an activity</Text>
           </View>
           <View style={styles.colorGrid}>
             {colors.map((color, index) => (
+              <View 
+              style={{
+                flexDirection: 'column',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                marginBottom: 10,
+
+              }}
+            >
               <TouchableOpacity
                 key={index}
-                style={[
-                  styles.colorBox,
-                  {
-                    backgroundColor:
-                      selectedColorIndex === index ? "white" : color,
-                  },
-                ]}
-                onPress={() => setSelectedColorIndex(index)}
-              />
+                style={{
+                  height: 50,
+                  marginBottom: 3,
+                  backgroundColor: color,
+                  borderWidth: 1,
+                  borderColor: "#6646EC",
+                }}
+                onPress={() => setSelectedColorIndex(index)} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "white",
+                    textAlign: "left",
+                    width: 120,
+                    textTransform: "capitalize",
+                  }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  hello
+                </Text>
+                </View>
             ))}
           </View>
-          <TouchableOpacity onPress={toggleVisibility}>
-            <Text style={styles.saveButton}>Save</Text>
+          <TouchableOpacity
+            onPress={toggleVisibility}
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginTop: 6,
+            }}
+          >
+            <Text
+              style={{
+                color: "#FFFF",
+                fontSize: 14,
+                textAlign: "center",
+                borderBottomWidth: 0.5,
+                borderColor: "#FFFF",
+              }}
+            >
+              Save
+            </Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -92,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   dialog: {
-    width: 300,
+    width: '86%',
     padding: 20,
     backgroundColor: "#333",
     borderRadius: 10,
@@ -126,23 +194,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 0,
   },
-  subtitle: {
-    fontSize: 12,
-    color: "white",
-    marginBottom: 10,
-    alignSelf: "flex-start",
-  },
   colorGrid: {
     width: "85%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     marginBottom: 20,
-  },
-  colorBox: {
-    width: "45%",
-    height: 40,
-    marginBottom: 10,
   },
   saveButton: {
     color: "white",

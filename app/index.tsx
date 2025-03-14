@@ -10,7 +10,7 @@ import StateModal from "@/components/modals/stateModal";
 
 export default function HomeScreen() {
   const [showNote, setShowNote] = useState(false);
-  const [showActivity, setShowActivity] = useState(true);
+  const [showActivity, setShowActivity] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
       <StateModal supabase={supabase} />

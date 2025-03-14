@@ -34,6 +34,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
                 position: "absolute",
                 top: 24,
                 right: 26,
+                zIndex: 1000,
               }}
             >
               <Text style={{
