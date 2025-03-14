@@ -33,9 +33,9 @@ const Header: React.FC<HeaderProps> = ({ title, subTitle }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
             style={{
-              fontSize: 15,
+              fontSize: 17,
               color: "#575453",
-              letterSpacing: 1.7,
+              letterSpacing: 1.2,
             }}
           >
             Your{" "}
@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ title, subTitle }) => {
             style={{
               fontSize: 17,
               color: "black",
-              letterSpacing: 1.7,
+              letterSpacing: 1.2,
             }}
           >
             {title}

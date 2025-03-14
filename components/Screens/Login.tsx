@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { supabase } from "@/components/utils/client";
 import { useUserStore } from "@/stores/useUserStore";
+import Logo from "@/components/ui/Logo";
 
 const LoginComponent: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -35,6 +36,19 @@ const LoginComponent: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* <View style={{alignItems: "center", justifyContent: "center", marginTop: 120, marginBottom: 40 }}>
+       <Logo />
+      </View> */}
+       <Text
+            style={{
+              textAlign: "center",
+              fontSize: 20,
+              color: "#FFFFFF",
+              marginBottom: 30,
+            }}
+          >
+            Cadence
+          </Text>
       {error && <Text style={styles.error}>{error}</Text>}
       {message && <Text style={styles.message}>{message}</Text>}
       <TextInput
@@ -91,6 +105,29 @@ const LoginComponent: React.FC = () => {
             }}
           >
             Sign in
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: 20,
+        }}
+      >
+        <TouchableOpacity onPress={handleLogin}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 16,
+              borderWidth: 1,
+              borderColor: "#FFFFFF",
+              width: 290,
+              color: "#FFFFFF",
+              padding: 10,
+            }}
+          >
+            Log in with Google
           </Text>
         </TouchableOpacity>
       </View>

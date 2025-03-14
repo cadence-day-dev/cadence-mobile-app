@@ -4,6 +4,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import useActivityStore from "@/stores/useActivityStore";
 import useTimeslicesStore from "@/stores/useTimelineStore";
 import * as Haptics from 'expo-haptics';
+import NoteIcon from "./NoteIcon";
 
 interface TimesliceModalProps {
   toggleNote: () => void;
@@ -238,6 +239,19 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
                   backgroundColor: timeSliceComponent.activityColor || "transparent",
                 }}
               />
+              <TouchableOpacity
+                onPress={toggleNote}
+                style={{
+                  width: 50,
+                  height: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "absolute",
+                  bottom: 20,
+                }}
+              >
+                <NoteIcon />
+              </TouchableOpacity>
             </View>
           );
         })}
