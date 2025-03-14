@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ThemedText } from "@/components/ThemedText";
 import useActivityStore from "@/stores/useActivityStore";
 
-const ActivityContainer = () => {
+const ActivityContainer = ({ toggleActivity }: { toggleActivity: () => void }) => {
   // Store hooks
   const activities = useActivityStore((state) => state.activities);
   const setSelectedActivityId = useActivityStore((state) => state.setSelectedActivityId);
@@ -13,7 +13,7 @@ const ActivityContainer = () => {
   const [isActivityDialogVisible, setActivityDialogVisible] = useState(false);
 
   const toggleActivityDialogVisibility = () => {
-    setActivityDialogVisible(!isActivityDialogVisible);
+    toggleActivity();
   };
 
   const colorLabels1 = {
@@ -96,7 +96,7 @@ const ActivityContainer = () => {
                   setSelectedActivityId(activity.activity_id.toString());
                   console.log(
                     `Selected activity: ${activity.name}, ID: ${activity.activity_id}`,
-                  );
+                  );  
                 }}
               />
               <Text

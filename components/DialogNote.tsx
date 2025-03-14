@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { Button } from "@/components/ui/Button";
 import { ThemedText } from "@/components/ThemedText";
 
 interface SimpleDialogProps {
@@ -27,116 +28,108 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.dialog}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={toggleVisibility}
-          >
-            <Text style={styles.closeButtonText}>X</Text>
-          </TouchableOpacity>
-
-          {/* <View
+        <TouchableOpacity
+              onPress={toggleVisibility} 
+              style={{
+                position: "absolute",
+                top: 24,
+                right: 26,
+              }}
+            >
+              <Text style={{
+                color: "white",
+                fontSize: 12,
+              }}>X</Text>
+            </TouchableOpacity>
+          <View style={{
+            flexDirection: "row", 
+            justifyContent: "center", 
+            alignItems: "center", 
+            width: "95%",
+            borderBottomWidth: .2,
+            borderColor: "#FFFFFF",
+            paddingBottom: 10,
+            marginBottom: 24,
+          }}
+            >
+            <Text
+              style={{
+                fontSize: 17,
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              Add a note
+            </Text>
+          </View>
+          <TextInput
             style={{
               width: "95%",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              borderBottomWidth: 0.5,
-              borderColor: "#FFFFFF",
-              marginBottom: 30,
-              marginTop: 12,
+              height: 260,
+              borderColor: "white",
+              borderWidth: 0.5,
+              padding: 20,
+              color: "#FFFFFF",
+              fontSize: 12,
+              marginBottom: 10,
             }}
-          >
-            <Text
-              style={{
-                fontSize: 17,
-                color: "white",
-                marginBottom: 13,
-              }}
-            >
-              Add a note
-            </Text>
-          </View> */}
-            <Text
-              style={{
-                fontSize: 17,
-                color: "white",
-                marginBottom: 30,
-                width: "95%",
-                textAlign: "center",
-                borderBottomWidth: 0.5,
-                borderColor: "#FFFFFF",
-              }}
-            >
-              Add a note
-            </Text>
-          <TextInput
-            style={styles.input}
             placeholder="Type the note here..."
+            placeholderTextColor="#FFFFFF"
             multiline
           />
-          {/* <TouchableOpacity
+          <TouchableOpacity
             onPress={toggleVisibility}
             style={{
-              width: "95%",
-              flex: 1,
               justifyContent: "center",
               alignItems: "center",
-              marginBottom: 40,
+              marginBottom: 30,
+              marginTop: 6,
             }}
-          > */}
+          >
             <Text
               style={{
-                width: "30%",
                 color: "#FFFF",
-                fontSize: 16,
+                fontSize: 14,
                 textAlign: "center",
                 borderBottomWidth: 0.5,
                 borderColor: "#FFFF",
               }}
             >
-              Save a note
+              Save the note
             </Text>
-          {/* </TouchableOpacity> */}
+          </TouchableOpacity>
 
           <View style={styles.subtitleContainer}>
             <Text style={styles.subtitle}>What's your energy level? </Text>
           </View>
-          <View style={styles.energyLevels}>
+          <View style={{
+              width: "95%",
+              height: 40,
+              marginBottom: 60,
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}>
             {["#FFFFFF", "#FFFFFF", "#727272", "#727272", "#727272"].map(
               (color, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={[styles.energyBar, { backgroundColor: color }]}
-                  onPress={() => {
-                    // Add your onPress logic here
-                  }}
+                  style={[styles.energyBar, { backgroundColor: color, height: 40,
+                    width: 40,
+                    marginBottom: 5, }]}
+                    onPress={toggleVisibility}
                 />
               ),
             )}
           </View>
-          <TouchableOpacity
+          <Button
             onPress={toggleVisibility}
+            title="Done"
             style={{
               width: "95%",
-              height: 40,
-              borderWidth: 0.8,
-              borderColor: "#FFFF",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
+              height: 40, 
             }}
-          >
-            <ThemedText
-              style={{
-                width: "100%",
-                color: "#FFFF",
-                fontSize: 16,
-                textAlign: "center",
-              }}
-            >
-              Done
-            </ThemedText>
-          </TouchableOpacity>
+          />
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -152,31 +145,12 @@ const styles = StyleSheet.create({
   },
   dialog: {
     width: "80%",
+    height: "67%",
     padding: 20,
     backgroundColor: "#151414",
     borderRadius: 10,
     alignItems: "center",
     position: "relative",
-  },
-  closeButton: {
-    position: "absolute",
-    top: 30,
-    right: 26,
-    padding: 5,
-  },
-  closeButtonText: {
-    color: "white",
-    fontSize: 12,
-  },
-  input: {
-    width: "95%",
-    height: 260,
-    borderColor: "white",
-    borderWidth: 0.5,
-    padding: 20,
-    color: "#727272",
-    fontSize: 12,
-    marginBottom: 10,
   },
   subtitle: {
     fontSize: 14,
@@ -184,13 +158,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 4,
     alignSelf: "flex-start",
-  },
-  energyLevels: {
-    width: "95%",
-    marginBottom: 40,
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
   energyBar: {
     height: 40,
