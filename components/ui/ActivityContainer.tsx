@@ -4,14 +4,18 @@ import { ThemedText } from "@/components/ThemedText";
 import useActivityStore from "@/stores/useActivityStore";
 
 const ActivityContainer = () => {
+  // Store hooks
   const activities = useActivityStore((state) => state.activities);
   const setSelectedActivityId = useActivityStore((state) => state.setSelectedActivityId);
+
+  // Local state
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [isActivityDialogVisible, setActivityDialogVisible] = useState(false);
 
   const toggleActivityDialogVisibility = () => {
     setActivityDialogVisible(!isActivityDialogVisible);
   };
+
   const colorLabels1 = {
     work: "#E9942F",
     sports: "#024886",
@@ -24,18 +28,19 @@ const ActivityContainer = () => {
     errands: "#141F2C",
     rest: "#DAEBFD",
   };
+
   return (
     <View
       style={{
         width: "100%",
         height: 176,
         marginVertical: 2,
-        paddingLeft: 12,
-        paddingRight: 12,
+        paddingHorizontal: 12,
         borderRadius: 5,
         alignSelf: "center",
       }}
     >
+      {/* Header */}
       <View
         style={{
           flexDirection: "row",
@@ -59,51 +64,55 @@ const ActivityContainer = () => {
           </ThemedText>
         </TouchableOpacity>
       </View>
-      <ScrollView
-        style={{ 
-          marginTop: 6,
-        }}
-      >
-        <View style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          paddingVertical: 10,
-        }}>
+
+      {/* Activities Grid */}
+      <ScrollView style={{ marginTop: 6 }}>
+        <View 
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            paddingVertical: 10,
+          }}
+        >
           {activities.map((activity) => (
-            <View style={{ alignItems: "center", marginRight: 10 }}>
-            <TouchableOpacity
+            <View 
               key={activity.activity_id.toString()}
-              style={{
-                width: 74,
-                height: 30,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: activity.color,
-                marginBottom: 10,
-              }}
-              onPress={() => {
-                setSelectedActivityId(activity.activity_id.toString());
-                console.log(
-                  `Selected activity: ${activity.name}, ID: ${activity.activity_id}`,
-                );
+              style={{ 
+                alignItems: "center", 
+                marginRight: 10 
               }}
             >
-            </TouchableOpacity>
-            <Text
-              style={{
-                fontSize: 10,
-                color: "black",
-                textAlign: "left",
-                width: 70,
-                marginBottom: 10,
-                textTransform: "capitalize"
-              }}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {activity.name}
-            </Text>
+              <TouchableOpacity
+                style={{
+                  width: 74,
+                  height: 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: activity.color,
+                  marginBottom: 10,
+                }}
+                onPress={() => {
+                  setSelectedActivityId(activity.activity_id.toString());
+                  console.log(
+                    `Selected activity: ${activity.name}, ID: ${activity.activity_id}`,
+                  );
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: "black",
+                  textAlign: "left",
+                  width: 70,
+                  marginBottom: 10,
+                  textTransform: "capitalize"
+                }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {activity.name}
+              </Text>
             </View>
           ))}
         </View>

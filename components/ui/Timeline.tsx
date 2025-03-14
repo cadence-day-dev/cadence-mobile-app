@@ -1,53 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import useActivityStore from "../../stores/useActivityStore";
-import useTimeslicesStore from "../../stores/useTimelineStore";
+import useActivityStore from "@/stores/useActivityStore";
+import useTimeslicesStore from "@/stores/useTimelineStore";
+import * as Haptics from 'expo-haptics';
 
 interface TimesliceModalProps {
   toggleNote: () => void;
   supabase: any;
 }
 
+// Helper functions
+const initializeTimeSliceComponents = (date: Date) => {
+  const components = [];
+  for (let i = 0; i < 48; i++) {
+    const startTime = new Date(date);
+    startTime.setHours(0, 0, 0, 0);
+    startTime.setMinutes(startTime.getMinutes() + i * 30);
+    const endTime = new Date(startTime.getTime() + 30 * 60000);
+    components.push({
+      timeslice_id: null as string | null,
+      activityName: null as string | null,
+      activityColor: null as string | null,
+      startTime,
+      endTime,
+    });
+  }
+  return components;
+};
+
 const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
+  // Store hooks
   const activities = useActivityStore((state) => state.activities);
   const selectedActivityId = useActivityStore((state) => state.selectedActivityId);
   const setSelectedActivityId = useActivityStore((state) => state.setSelectedActivityId);
   const timeslices = useTimeslicesStore((state) => state.timeslices);
   const setTimeslices = useTimeslicesStore((state) => state.setTimeslices);
+
+  // Date initialization
   const today = new Date();
-  const initializeTimeSliceComponents = (date: Date) => {
-    const components = [];
-    for (let i = 0; i < 48; i++) {
-      const startTime = new Date(date);
-      startTime.setHours(0, 0, 0, 0);
-      startTime.setMinutes(startTime.getMinutes() + i * 30);
-      const endTime = new Date(startTime.getTime() + 30 * 60000);
-      components.push({
-        timeslice_id: null as string | null,
-        activityName: null as string | null,
-        activityColor: null as string | null,
-        startTime,
-        endTime,
-      });
-    }
-    return components;
-  };
   const [timeSliceComponents, setTimeSliceComponents] = useState(() =>
-    initializeTimeSliceComponents(today),
+    initializeTimeSliceComponents(today)
   );
+
+  // Helper functions
   const updateTimeSliceComponents = (
     timeslices: any[],
-    timeSliceComponents: any[],
+    timeSliceComponents: any[]
   ) => {
-    const updatedTimeSliceComponents = timeSliceComponents.map((component) => {
+    return timeSliceComponents.map((component) => {
       const matchingTimeslice = timeslices.find(
         (timeslice) =>
-          new Date(timeslice.start_time).getTime() ===
-            component.startTime.getTime() &&
-          new Date(timeslice.end_time).getTime() ===
-            component.endTime.getTime(),
+          new Date(timeslice.start_time).getTime() === component.startTime.getTime() &&
+          new Date(timeslice.end_time).getTime() === component.endTime.getTime()
       );
+      
       if (matchingTimeslice) {
         return {
           ...component,
@@ -58,25 +65,15 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
       }
       return component;
     });
-    return updatedTimeSliceComponents;
   };
 
-  useEffect(() => {
-    const updatedTimeSliceComponents = updateTimeSliceComponents(
-      timeslices,
-      timeSliceComponents,
-    );
-    setTimeSliceComponents(updatedTimeSliceComponents);
-  }, [timeslices]);
-
+  // Database operations
   const insertTimeSlice = async (
     startTime: Date,
     endTime: Date,
-    timeSliceComponent: any,
+    timeSliceComponent: any
   ) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     const userId = user?.id || "<default_user_id>";
 
     const { data, error } = await supabase
@@ -93,19 +90,16 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
 
     if (error) {
       if (error.code === "23505") {
-        alert(
-          "A timeslice for this time already exists. Please choose a different time.",
-        );
+        alert("A timeslice for this time already exists. Please choose a different time.");
       } else {
         console.error("Error inserting timeslice:", error);
-        alert(
-          "An error occurred while inserting the timeslice. Please try again.",
-        );
+        alert("An error occurred while inserting the timeslice. Please try again.");
       }
     } else {
       const selectedActivity = activities.find(
-        (activity) => activity.activity_id === data[0].activity_id,
+        (activity) => activity.activity_id === data[0].activity_id
       );
+      
       const newTimeslice = {
         timeslice_id: data[0].timeslice_id,
         activityId: data[0].activity_id,
@@ -114,32 +108,27 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
         startTime: startTime,
         endTime: endTime,
       };
-      const updatedTimeSliceComponents = timeSliceComponents.map(
-        (component, index) => {
-          if (
-            component.startTime.getTime() ===
-              timeSliceComponent.startTime.getTime() &&
-            component.endTime.getTime() === timeSliceComponent.endTime.getTime()
-          ) {
-            return newTimeslice;
-          }
-          return component;
-        },
+
+      setTimeSliceComponents(
+        timeSliceComponents.map((component) =>
+          component.startTime.getTime() === timeSliceComponent.startTime.getTime() &&
+          component.endTime.getTime() === timeSliceComponent.endTime.getTime()
+            ? newTimeslice
+            : component
+        )
       );
-      setTimeSliceComponents(updatedTimeSliceComponents);
     }
   };
+
   const deleteTimeslice = async (timeslice_id: string) => {
-    const { data, error: deleteError } = await supabase
+    const { error: deleteError } = await supabase
       .from("timeslices")
       .delete()
       .eq("timeslice_id", timeslice_id);
 
     if (deleteError) {
       console.error("Error deleting timeslice:", deleteError);
-      alert(
-        "An error occurred while deleting the timeslice. Please try again.",
-      );
+      alert("An error occurred while deleting the timeslice. Please try again.");
     } else {
       setTimeSliceComponents(
         timeSliceComponents.map((ts) =>
@@ -150,53 +139,36 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
                 activityColor: null,
                 timeslice_id: null,
               }
-            : ts,
-        ),
+            : ts
+        )
       );
     }
   };
+
   const clickTimesliceComponent = async (timeSliceComponent: any) => {
     if (timeSliceComponent.timeslice_id === null) {
       console.log("empty timeslice");
       insertTimeSlice(
         timeSliceComponent.startTime,
         timeSliceComponent.endTime,
-        timeSliceComponent,
+        timeSliceComponent
       );
     } else {
       deleteTimeslice(timeSliceComponent.timeslice_id);
       console.log("timeslice not empty");
     }
   };
-  const fetchUserTimeSlicesNew = async ({
-    from_time,
-    to_time,
-  }: {
-    from_time: string;
-    to_time: string;
-  }) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const userId = user?.id || "<default_user_id>";
-    console.log("From Time:", from_time);
-    console.log("To Time:", to_time);
-    let { data, error } = await supabase.rpc("get_timeslices_for_user", {
-      from_time: from_time,
-      p_user_id: userId,
-      to_time: to_time,
-    });
-    if (error) {
-      console.error("Error fetching new timeslices:", error);
-      alert(
-        "An error occurred while fetching new timeslices. Please try again.",
-      );
-    } else {
-      console.log("Fetched Timeslices:", data.data);
-      return data.data;
-    }
-  };
 
+  // Effects
+  useEffect(() => {
+    const updatedTimeSliceComponents = updateTimeSliceComponents(
+      timeslices,
+      timeSliceComponents
+    );
+    setTimeSliceComponents(updatedTimeSliceComponents);
+  }, [timeslices]);
+
+  // Render
   return (
     <View
       style={{
@@ -207,33 +179,68 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
         paddingVertical: 0,
       }}
     >
-     <ScrollView
+      <ScrollView
         horizontal
+        ref={(ref) => {
+          if (ref) {
+            const currentHour = new Date().getHours();
+            const currentMinute = new Date().getMinutes();
+            const currentIndex = currentHour * 2 + (currentMinute >= 30 ? 1 : 0);
+            ref.scrollTo({ x: currentIndex * 49, animated: true }); // 49 = width(45) + marginHorizontal(2 * 2)
+          }
+        }}
         contentContainerStyle={{
-          flexDirection: "row",
+          flexDirection: "row", 
           paddingHorizontal: 10,
-          height: 400,
         }}
       >
-        {timeSliceComponents.map((timeSliceComponent, index) => (
-          <TouchableOpacity
-            key={`rectangle-${index}`}
-            onPress={() => clickTimesliceComponent(timeSliceComponent)}
-            activeOpacity={1}
-            style={{
-              width: 45,
-              height: '90%',
-              borderWidth: 1,
-              borderColor: "#6646EC",
-              marginHorizontal: 2,
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingVertical: 0,
-              backgroundColor:
-              timeSliceComponent.activityColor || "transparent",
-            }}
-          />
-        ))}
+        {timeSliceComponents.map((timeSliceComponent, index) => {
+          const hours = String(Math.floor(index / 2)).padStart(2, "0");
+          const minutes = index % 2 === 0 ? "00" : "30";
+          const timeLabel = `${hours}:${minutes}`;
+          return (
+            <View
+              key={`timeline-slot-${index}`}
+              style={{
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Text
+                style={{
+                  width: 40,
+                  fontSize: 10,
+                  color: "black",
+                  marginTop: 10,
+                  textAlign: "center",
+                  marginBottom: 4,
+                  fontWeight: new Date().getHours() === parseInt(hours) && 
+                             new Date().getMinutes() >= parseInt(minutes) && 
+                             new Date().getMinutes() < parseInt(minutes) + 30 ? "bold" : "normal"
+                }}
+              >
+                {timeLabel}
+              </Text>
+              <TouchableOpacity
+                key={`rectangle-${index}`}
+                onPress={() => clickTimesliceComponent(timeSliceComponent)}
+                activeOpacity={1}
+                style={{
+                  width: 45,
+                  height: '90%',
+                  borderWidth: 1,
+                  borderColor: "#6646EC",
+                  marginHorizontal: 2,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingVertical: 0,
+                  backgroundColor: timeSliceComponent.activityColor || "transparent",
+                }}
+              />
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );

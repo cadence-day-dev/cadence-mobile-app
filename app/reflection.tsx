@@ -5,7 +5,9 @@ import Header from "@/components/ui/Header";
 export default function ReflectionScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
-      <Header title={"Weekly Cadence"} subTitle={"02/11/24 to 08/11/24"} />
+      <View style={{height: "10%" , marginBottom: 9, marginTop: 6}}>
+        <Header title={"Weekly Cadence"} subTitle={"02/11/24 to 08/11/24"} />
+      </View>
       <View
         style={{
           height: "88%",
