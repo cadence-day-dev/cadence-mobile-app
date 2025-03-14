@@ -135,7 +135,33 @@ const StateModal: React.FC<StateModalProps> = ({ supabase }) => {
   };
 
   return (
-    <View />
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
+        <Text style={styles.title}>State container status</Text>
+        <View style={[styles.statusContainer, { flexDirection: "column" }]}>
+          {activities.length > 0 ? (
+            <Text style={styles.success}>Activities Fetched</Text>
+          ) : (
+            <Text style={styles.error}>Activities not fetched</Text>
+          )}
+          {notes.length > 0 ? (
+            <Text style={styles.success}>Notes Fetched</Text>
+          ) : (
+            <Text style={styles.error}>Notes not fetched</Text>
+          )}
+          {/* {profile.email ? (
+            <Text style={styles.success}>Profile Fetched</Text>
+          ) : (
+            <Text style={styles.error}>Profile not fetched</Text>
+          )} */}
+          {timeslices.length > 0 ? (
+            <Text style={styles.success}>Timeslices Fetched</Text>
+          ) : (
+            <Text style={styles.error}>Timeslices not fetched</Text>
+          )}
+        </View>
+      </View>
+    </View>
   );
 };
 

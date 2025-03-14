@@ -10,7 +10,10 @@ interface Activity {
 }
 
 interface ActivityState {
+  selectedActivity: any;
   activities: Activity[];
+  selectedActivityId: string | null;
+  setSelectedActivityId: (activity_id: string) => void;
   addActivity: (activity: Activity) => void;
   removeActivity: (activity_id: string) => void;
   setActivities: (activities: Activity[]) => void;
@@ -18,6 +21,16 @@ interface ActivityState {
 
 const useActivityStore = create<ActivityState>((set) => ({
   activities: [],
+  selectedActivity: null,
+  selectedActivityId: null,
+  setSelectedActivityId: (activity_id: string) =>
+    set((state: ActivityState) => ({
+      ...state,
+      selectedActivityId: activity_id,
+      selectedActivity: state.activities.find(
+        (activity) => activity.activity_id === activity_id
+      ),
+    })),
   setActivities: (activities: Activity[]) =>
     set((state: ActivityState) => ({
       ...state,

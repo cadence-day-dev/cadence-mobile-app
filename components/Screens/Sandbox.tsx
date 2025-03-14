@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native";
 import ActivityModal from "@/components/modals/activityModal";
 import { supabase } from "@/components/utils/client";
-import StateModal from "@/components/modals/stateModal";
+import StateModal from "@/components/modals/stateIndicator";
 // eslint-disable-next-line import/no-unresolved
 import TimelineModal from "@/components/modals/TimelineModal";
 import { View } from "react-native";

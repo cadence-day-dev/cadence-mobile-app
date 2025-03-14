@@ -1,13 +1,14 @@
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, ScrollView, Text } from "react-native";
 import { useState } from "react";
 import { ThemedText } from "@/components/ThemedText";
+import useActivityStore from "@/stores/useActivityStore";
 
 const ActivityContainer = () => {
-  const [, setSelectedColor] = useState<string | null>(null);
+  const activities = useActivityStore((state) => state.activities);
+  const setSelectedActivityId = useActivityStore((state) => state.setSelectedActivityId);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [isActivityDialogVisible, setActivityDialogVisible] = useState(false);
-  const handleColorPress = (color: string) => {
-    setSelectedColor(color);
-  };
+
   const toggleActivityDialogVisibility = () => {
     setActivityDialogVisible(!isActivityDialogVisible);
   };
@@ -27,6 +28,7 @@ const ActivityContainer = () => {
     <View
       style={{
         width: "100%",
+        height: 176,
         marginVertical: 2,
         paddingLeft: 12,
         paddingRight: 12,
@@ -57,77 +59,55 @@ const ActivityContainer = () => {
           </ThemedText>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          marginTop: 16,
-          justifyContent: "space-between",
+      <ScrollView
+        style={{ 
+          marginTop: 6,
         }}
       >
-        {Object.entries(colorLabels1).map(([label, color], index) => (
-          <View key={color} style={{ alignItems: "center" }}>
+        <View style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          paddingVertical: 10,
+        }}>
+          {activities.map((activity) => (
+            <View style={{ alignItems: "center", marginRight: 10 }}>
             <TouchableOpacity
-              onPress={() => handleColorPress(color)}
-              key={label}
+              key={activity.activity_id.toString()}
               style={{
-                width: 70,
+                width: 74,
                 height: 30,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: color,
+                backgroundColor: activity.color,
+                marginBottom: 10,
               }}
-            />
-            <ThemedText
+              onPress={() => {
+                setSelectedActivityId(activity.activity_id.toString());
+                console.log(
+                  `Selected activity: ${activity.name}, ID: ${activity.activity_id}`,
+                );
+              }}
+            >
+            </TouchableOpacity>
+            <Text
               style={{
-                fontSize: 12,
+                fontSize: 10,
                 color: "black",
                 textAlign: "left",
                 width: 70,
                 marginBottom: 10,
-                textTransform: "capitalize",
+                textTransform: "capitalize"
               }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
             >
-              {label}
-            </ThemedText>
-          </View>
-        ))}
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
-        {Object.entries(colorLabels2).map(([label, color], index) => (
-          <View style={{ alignItems: "center" }} key={label}>
-            <TouchableOpacity
-              onPress={() => handleColorPress(color)}
-              key={label}
-              style={{
-                width: 70,
-                height: 30,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: color,
-              }}
-            />
-            <ThemedText
-              style={{
-                fontSize: 12,
-                color: "black",
-                textAlign: "left",
-                width: 70,
-                marginBottom: 10,
-                textTransform: "capitalize",
-              }}
-            >
-              {label}
-            </ThemedText>
-          </View>
-        ))}
-      </View>
+              {activity.name}
+            </Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
 };
