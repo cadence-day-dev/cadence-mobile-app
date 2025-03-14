@@ -1,15 +1,15 @@
 /* eslint-disable react-native/no-unused-styles */
 import { View, Text } from "react-native";
 import Arrow from "@/components/ui/Arrow";
-import Star from "@/components/ui/Star";
 import { ThemedText } from "@/components/ThemedText";
 
 interface HeaderProps {
-  title: any;
-  subTitle: any;
+  title: string;
+  subTitle: string;
+  rightElement?: React.ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, subTitle }) => {
+const Header: React.FC<HeaderProps> = ({ title, subTitle, rightElement }) => {
   return (
     <View
       style={{
@@ -54,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ title, subTitle }) => {
           </View>
         </View>
         <View style={{ position: 'absolute', right: 6, top: 1 }}>
-          <Star />
+          {rightElement}
         </View>
       </View>
       <ThemedText

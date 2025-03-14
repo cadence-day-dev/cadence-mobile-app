@@ -22,6 +22,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
   const [selectedColorIndex, setSelectedColorIndex] = useState<number | null>(
     null,
   );
+  const [message, setMessage] = useState("");
 
   const colors = [
     "#0B0E1A",
@@ -91,25 +92,27 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
           <View style={styles.colorGrid}>
             {colors.map((color, index) => (
               <View 
-              style={{
-                flexDirection: 'column',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                marginBottom: 10,
-
-              }}
-            >
-              <TouchableOpacity
-                key={index}
+                key={`color-container-${index}`}
                 style={{
-                  height: 50,
-                  marginBottom: 3,
-                  backgroundColor: color,
-                  borderWidth: 1,
-                  borderColor: "#6646EC",
+                  flexDirection: 'column',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
                 }}
-                onPress={() => setSelectedColorIndex(index)} />
+              >
+                <TouchableOpacity
+                  key={`color-button-${index}`}
+                  style={{
+                    height: 50,
+                    marginBottom: 3,
+                    backgroundColor: color,
+                    borderWidth: 1,
+                    borderColor: "#6646EC",
+                  }}
+                  onPress={() => setSelectedColorIndex(index)}
+                />
                 <Text
+                  key={`color-text-${index}`}
                   style={{
                     fontSize: 12,
                     color: "white",
@@ -122,7 +125,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
                 >
                   hello
                 </Text>
-                </View>
+              </View>
             ))}
           </View>
           <TouchableOpacity
@@ -146,6 +149,21 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
               Save
             </Text>
           </TouchableOpacity>
+
+          <View style={styles.messageInputContainer}>
+            <View style={styles.messageInputWrapper}>
+              <TextInput
+                style={styles.messageInput}
+                placeholder="Message Echo"
+                placeholderTextColor="#999999"
+                value={message}
+                onChangeText={setMessage}
+              />
+              <TouchableOpacity style={styles.sendButton}>
+                <Text style={styles.sendButtonText}>↑</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -206,6 +224,46 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textDecorationLine: "underline",
     marginBottom: 10,
+  },
+  messageInputContainer: {
+    width: "100%",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "#333",
+    padding: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  messageInputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(102, 70, 236, 0.1)",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+  messageInput: {
+    flex: 1,
+    color: "#FFFFFF",
+    fontSize: 14,
+    paddingVertical: 0,
+  },
+  sendButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#6646EC",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
+  },
+  sendButtonText: {
+    color: "#FFFFFF",
+    fontSize: 18,
   },
 });
 
