@@ -23,7 +23,7 @@ export default function HomeScreen() {
           title={"Daily Cadence"} 
           subTitle={new Date().toLocaleDateString() + " at " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           rightElement={
-            <TouchableOpacity onPress={() => setShowEcho(true)}>
+            <TouchableOpacity onPress={() => setShowEcho(false)}>
               <Star />
             </TouchableOpacity>
           }

@@ -39,8 +39,8 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
             >
               <Text style={{
                 color: "white",
-                fontSize: 12,
-              }}>X</Text>
+                fontSize: 14,
+              }}>✕</Text>
             </TouchableOpacity>
           <View style={{
             flexDirection: "row", 
