@@ -7,8 +7,32 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
+import { useEffect } from "react";
+import { fetchUserTimeSlicesNew } from "../utils/client";
 
 const ScheduleGrid = () => {
+  const [reflectionTimeslices, setReflectionTimeslices] = useState([]);
+  useEffect(() => {
+    console.log('reflection timeslices', reflectionTimeslices)
+  }, [reflectionTimeslices]);
+
+  useEffect(() => {
+    fetchWeeklyTimeslices();
+  }, []);
+  
+  const fetchWeeklyTimeslices = async () => {
+    const toDate = new Date();
+    const fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - 7);
+
+    const timeslices = await fetchUserTimeSlicesNew({
+      from_time: fromDate.toISOString(),
+      to_time: toDate.toISOString(),
+    });
+    setReflectionTimeslices(timeslices);
+  };
+
+  
   const dates = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
     date.setDate(1);
@@ -123,11 +147,12 @@ const styles = StyleSheet.create({
     color: "black",
   },
   cell: {
-    width: 51,
+    width: 49,
     height: 18,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 2,
+    marginRight: 2,
   },
   hourText: {
     fontSize: 10,

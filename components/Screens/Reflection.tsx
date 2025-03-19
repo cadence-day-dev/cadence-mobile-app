@@ -1,8 +1,11 @@
 import { SafeAreaView, View } from "react-native";
 import ScheduleGrid from "@/components/ui/ReflectionGrid";
 import Header from "@/components/ui/Header";
+import { fetchUserTimeSlicesNew } from "../utils/client";
+import { useEffect, useState } from "react";
 
 export default function ReflectionScreen() {
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
       <View style={{height: "10%" , marginBottom: 0, marginTop: 6}}>

@@ -52,7 +52,6 @@ const BottomDialog: React.FC<BottomDialogProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
   container: {
@@ -64,17 +63,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   header: {
-    paddingVertical: 6,
+    paddingVertical: 8,
     borderBottomWidth: 1,
+    width: '90%',
+    alignSelf: 'center',
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
   },
   leftSymbol: {
-    width: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },

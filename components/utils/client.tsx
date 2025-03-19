@@ -13,3 +13,29 @@ export const signOut = async () => {
     console.log('Successfully signed out');
   }
 };
+
+export const fetchUserTimeSlicesNew = async ({
+  from_time,
+  to_time,
+}: {
+  from_time: string;
+  to_time: string;
+}) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const userId = user?.id || "<default_user_id>";
+  let { data, error } = await supabase.rpc("get_timeslices_for_user", {
+    from_time: from_time,
+    p_user_id: userId,
+    to_time: to_time,
+  });
+  if (error) {
+    console.error("Error fetching new timeslices:", error);
+    alert(
+      "An error occurred while fetching new timeslices. Please try again.",
+    );
+  } else {
+    return data.data || [];
+  }
+};

@@ -6,8 +6,8 @@ import useNotesStore from "../../stores/useNotesStore";
 // import useNotesStore from "../stores/useNotesStore";
 // import usePrivateActivityStore from "../../stores/usePrivateActivityStore";
 // import useProfileStore from "../../stores/useProfileStore";
-// import useTimeslicesStore from "../../stores/useTimeslicesStore";
-import useTimeslicesStore from "@/stores/useTimelineStore";
+import useTimeslicesStore from "../../stores/useTimelineStore";
+import { fetchUserTimeSlicesNew } from "../utils/client";
 
 interface StateModalProps {
   supabase: any;
@@ -100,31 +100,7 @@ const StateModal: React.FC<StateModalProps> = ({ supabase }) => {
     }
   };
 
-  const fetchUserTimeSlicesNew = async ({
-    from_time,
-    to_time,
-  }: {
-    from_time: string;
-    to_time: string;
-  }) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const userId = user?.id || "<default_user_id>";
-    let { data, error } = await supabase.rpc("get_timeslices_for_user", {
-      from_time: from_time,
-      p_user_id: userId,
-      to_time: to_time,
-    });
-    if (error) {
-      console.error("Error fetching new timeslices:", error);
-      alert(
-        "An error occurred while fetching new timeslices. Please try again.",
-      );
-    } else {
-      setTimeslices(data.data || []);
-    }
-  };
+  
 
   const fetchTodayTimeslices = async () => {
     const from_time = new Date(new Date().setHours(1, 0, 0, 0)).toISOString();
@@ -132,6 +108,7 @@ const StateModal: React.FC<StateModalProps> = ({ supabase }) => {
     const to_time = new Date(new Date().setHours(23, 30, 0, 0)).toISOString();
     // console.log('To Time:', new Date(to_time).toLocaleString());
     const timeslices = await fetchUserTimeSlicesNew({ from_time, to_time });
+    setTimeslices(timeslices);
   };
 
   return (
