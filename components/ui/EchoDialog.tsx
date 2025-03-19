@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import BottomDialog from './BottomDialog';
 import Star from './Star';
 
@@ -15,9 +15,10 @@ const EchoDialog = ({ isVisible, onClose }: EchoDialogProps) => {
       isVisible={isVisible}
       onClose={onClose}
       title="Echo"
+      leftSymbol={<Star />}
     >
       <View style={styles.container}>
-        <Star />
+        <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.message}>
           Hey there! I'm Echo, your guide to making sense of time. Right now, we're starting with a blank slate, but as you log your moments, I'll help you see the patterns in your days. No pressure—just awareness.
         </Text>
@@ -33,20 +34,21 @@ const EchoDialog = ({ isVisible, onClose }: EchoDialogProps) => {
         <Text style={styles.privacy}>
           Everything you log stays private and encrypted. Only you have access. I don't judge—I just help you notice what's already there.
         </Text>
+        </ScrollView >
         <View style={styles.messageInputContainer}>
-            <View style={styles.messageInputWrapper}>
-              <TextInput
-                style={styles.messageInput}
-                placeholder="Message Echo"
-                placeholderTextColor="#999999"
-                value={message}
-                onChangeText={setMessage}
-              />
-              <TouchableOpacity style={styles.sendButton}>
-                <Text style={styles.sendButtonText}>↑</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.messageInputWrapper}>
+            <TextInput
+              style={styles.messageInput}
+              placeholder="Message Echo"
+              placeholderTextColor="#7C7C7C"
+              value={message}
+              onChangeText={setMessage}
+            />
+            <TouchableOpacity style={styles.sendButton}>
+              <Text style={styles.sendButtonText}>↑</Text>
+            </TouchableOpacity>
           </View>
+        </View>
       </View>
     </BottomDialog>
   );
@@ -54,7 +56,10 @@ const EchoDialog = ({ isVisible, onClose }: EchoDialogProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    gap: 16,
+    flex: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 20, // Space for the message input
+    height: 800,
   },
   avatar: {
     width: 24,
@@ -75,12 +80,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   button: {
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-end',
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 16,
-    marginTop: 8,
+    marginTop: 30,
+    marginBottom: 30,
   },
   buttonText: {
     color: '#000000',
@@ -91,51 +97,50 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     lineHeight: 24,
-    marginTop: 16,
   },
   privacy: {
     color: '#FFFFFF',
     fontSize: 16,
     lineHeight: 24,
     marginTop: 16,
+    marginBottom: 80,
     opacity: 0.8,
   },
   messageInputContainer: {
-    width: "100%",
     position: "absolute",
+    height: 80,
+    left: 0,
+    right: 0,
     bottom: 0,
-    borderTopColor: "rgba(255, 255, 255, 0.1)",
-    backgroundColor: "#333",
-    padding: 10,
-    borderWidth: 1,
+    backgroundColor: "#D9D9D9",
+    borderTopWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
   },
   messageInputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(102, 70, 236, 0.1)",
-    // borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   messageInput: {
     flex: 1,
-    color: "#FFFFFF",
+    color: "#000000",
     fontSize: 14,
     paddingVertical: 0,
   },
   sendButton: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
     borderRadius: 15,
-    backgroundColor: "#6646EC",
+    borderWidth: 1,
+    borderColor: "#000000",
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 10,
   },
   sendButtonText: {
-    color: "#FFFFFF",
-    fontSize: 18,
+    color: "#000000",
+    fontSize: 12,
   },
 });
 

@@ -1,72 +1,49 @@
 import React from 'react';
-import { View, Modal, Animated, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
-import { useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 
 interface BottomDialogProps {
   isVisible: boolean;
   onClose: () => void;
-  children: React.ReactNode;
   title?: string;
+  children: React.ReactNode;
+  leftSymbol?: React.ReactNode;
 }
 
-const BottomDialog = ({ isVisible, onClose, children, title }: BottomDialogProps) => {
-  const slideAnim = useRef(new Animated.Value(0)).current;
-  const { height } = Dimensions.get('window');
-
-  useEffect(() => {
-    if (isVisible) {
-      Animated.spring(slideAnim, {
-        toValue: 1,
-        useNativeDriver: true,
-        tension: 65,
-        friction: 11
-      }).start();
-    } else {
-      Animated.spring(slideAnim, {
-        toValue: 0,
-        useNativeDriver: true,
-        tension: 65,
-        friction: 11
-      }).start();
-    }
-  }, [isVisible]);
-
+const BottomDialog: React.FC<BottomDialogProps> = ({
+  isVisible,
+  onClose,
+  title,
+  children,
+  leftSymbol,
+}) => {
   return (
     <Modal
-      transparent
       visible={isVisible}
-      animationType="fade"
+      transparent
+      animationType="slide"
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <TouchableOpacity 
-          style={styles.backdrop}
-          activeOpacity={1} 
-          onPress={onClose}
-        />
-        <Animated.View
-          style={[
-            styles.content,
-            {
-              transform: [{
-                translateY: slideAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [height, 0]
-                })
-              }]
-            }
-          ]}
-        >
+        <View style={styles.container}>
           <View style={styles.header}>
-            {title && <Text style={styles.title}>{title}</Text>}
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeText}>✕</Text>
-            </TouchableOpacity>
+            <View style={styles.headerContent}>
+              <View style={styles.leftSymbol}>
+                {leftSymbol}
+              </View>
+              <View style={styles.titleContainer}>
+                {title && (
+                  <Text style={styles.title}>{title}</Text>
+                )}
+              </View>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.body}>
+          <View style={styles.content}>
             {children}
           </View>
-        </Animated.View>
+        </View>
       </View>
     </Modal>
   );
@@ -75,41 +52,54 @@ const BottomDialog = ({ isVisible, onClose, children, title }: BottomDialogProps
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  content: {
-    backgroundColor: '#2A2A2A',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    minHeight: 200,
-    maxHeight: '90%',
+  container: {
+    backgroundColor: '#1C1C1C',
+    borderTopLeftRadius: 6,
+    borderTopRightRadius: 6,
+    minHeight: '50%',
+    maxHeight: '95%',
+    overflow: 'hidden',
   },
   header: {
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  headerContent: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
+  },
+  leftSymbol: {
+    width: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 12,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
     color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '500',
   },
   closeButton: {
-    padding: 8,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  closeText: {
-    fontSize: 20,
+  closeButtonText: {
     color: '#FFFFFF',
+    fontSize: 17,
   },
-  body: {
-    padding: 20,
+  content: {
+    flex: 1,
   },
 });
 

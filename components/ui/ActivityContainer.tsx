@@ -8,26 +8,11 @@ const ActivityContainer = ({ toggleActivity }: { toggleActivity: () => void }) =
   const activities = useActivityStore((state) => state.activities);
   const setSelectedActivityId = useActivityStore((state) => state.setSelectedActivityId);
 
-  // Local state
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [isActivityDialogVisible, setActivityDialogVisible] = useState(false);
 
   const toggleActivityDialogVisibility = () => {
     toggleActivity();
   };
 
-  const colorLabels1 = {
-    work: "#E9942F",
-    sports: "#024886",
-    family: "#8AB3DB",
-    admin: "#FFF4A0",
-  };
-  const colorLabels2 = {
-    food: "#758A61",
-    friends: "#9D8266",
-    errands: "#141F2C",
-    rest: "#DAEBFD",
-  };
 
   return (
     <View
@@ -66,7 +51,7 @@ const ActivityContainer = ({ toggleActivity }: { toggleActivity: () => void }) =
       </View>
 
       {/* Activities Grid */}
-      <ScrollView style={{ marginTop: 6 }}>
+      <ScrollView style={{ marginTop: 6}}>
         <View 
           style={{
             flexDirection: 'row',
@@ -80,7 +65,6 @@ const ActivityContainer = ({ toggleActivity }: { toggleActivity: () => void }) =
               key={activity.activity_id.toString()}
               style={{ 
                 alignItems: "center", 
-                marginRight: 10 
               }}
             >
               <TouchableOpacity
@@ -90,7 +74,7 @@ const ActivityContainer = ({ toggleActivity }: { toggleActivity: () => void }) =
                   justifyContent: "center",
                   alignItems: "center",
                   backgroundColor: activity.color,
-                  marginBottom: 10,
+                  marginBottom: 6,
                 }}
                 onPress={() => {
                   setSelectedActivityId(activity.activity_id.toString());
@@ -101,7 +85,7 @@ const ActivityContainer = ({ toggleActivity }: { toggleActivity: () => void }) =
               />
               <Text
                 style={{
-                  fontSize: 10,
+                  fontSize: 12,
                   color: "black",
                   textAlign: "left",
                   width: 70,

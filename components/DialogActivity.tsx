@@ -1,3 +1,4 @@
+import useActivityStore from "@/stores/useActivityStore";
 import React, { useState } from "react";
 import {
   Modal,
@@ -23,6 +24,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
     null,
   );
   const [message, setMessage] = useState("");
+  const activities = useActivityStore((state) => state.activities);
 
   const colors = [
     "#0B0E1A",
@@ -33,8 +35,6 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
     "#CD5C5C",
     "#8B4513",
     "#D3D3D3",
-    // "#4682B4",
-    // "#B0C4DE",
     "#FFA500",
     "transparent",
   ];
@@ -59,7 +59,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
                 color: "white",
                 fontSize: 14,
               }}>✕</Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
           <View style={{
             flexDirection: "row", 
             justifyContent: "center", 
@@ -90,7 +90,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
             }}>Press and hold to edit or remove an activity</Text>
           </View>
           <View style={styles.colorGrid}>
-            {colors.map((color, index) => (
+            {activities.map((activity, index) => (
               <View 
                 key={`color-container-${index}`}
                 style={{
@@ -105,7 +105,7 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
                   style={{
                     height: 50,
                     marginBottom: 3,
-                    backgroundColor: color,
+                    backgroundColor: activity.color,
                     borderWidth: 1,
                     borderColor: "#6646EC",
                   }}
@@ -123,10 +123,44 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  hello
+                   {activity.name}
                 </Text>
               </View>
             ))}
+             <View 
+                key={`color-container-${20}`}
+                style={{
+                  flexDirection: 'column',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}
+              >
+                <TouchableOpacity
+                  key={`color-button-${21}`}
+                  style={{
+                    height: 50,
+                    marginBottom: 3,
+                    backgroundColor: 'transparent',
+                    borderWidth: 1,
+                    borderColor: "#6646EC",
+                  }}
+                />
+                <Text
+                  key={`color-text-${22}`}
+                  style={{
+                    fontSize: 12,
+                    color: "white",
+                    textAlign: "left",
+                    width: 120,
+                    textTransform: "capitalize",
+                  }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                   Add new activity
+                </Text>
+              </View>
           </View>
           <TouchableOpacity
             onPress={toggleVisibility}
@@ -150,20 +184,6 @@ const SimpleDialog: React.FC<SimpleDialogProps> = ({
             </Text>
           </TouchableOpacity>
 
-          <View style={styles.messageInputContainer}>
-            <View style={styles.messageInputWrapper}>
-              <TextInput
-                style={styles.messageInput}
-                placeholder="Message Echo"
-                placeholderTextColor="#999999"
-                value={message}
-                onChangeText={setMessage}
-              />
-              <TouchableOpacity style={styles.sendButton}>
-                <Text style={styles.sendButtonText}>↑</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
         </View>
       </KeyboardAvoidingView>
     </Modal>

@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({ title, subTitle, rightElement }) => {
             <Arrow/>
           </View>
         </View>
-        <View style={{ position: 'absolute', right: 6, top: 1 }}>
+        <View style={{ position: 'absolute', right: -2, top: 0 }}>
           {rightElement}
         </View>
       </View>
