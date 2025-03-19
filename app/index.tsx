@@ -13,7 +13,7 @@ import Star from "@/components/ui/Star";
 export default function HomeScreen() {
   const [showNote, setShowNote] = useState(false);
   const [showActivity, setShowActivity] = useState(false);
-  const [showEcho, setShowEcho] = useState(true); // Show Echo dialog by default
+  const [showEcho, setShowEcho] = useState(false); // Show Echo dialog by default
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
@@ -23,13 +23,13 @@ export default function HomeScreen() {
           title={"Daily Cadence"} 
           subTitle={new Date().toLocaleDateString() + " at " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           rightElement={
-            <TouchableOpacity onPress={() => setShowEcho(false)}>
+            <TouchableOpacity onPress={() => setShowEcho(!showEcho)}>
               <Star />
             </TouchableOpacity>
           }
         />
       </View>
-      <View style={{height: "58%" }}>
+      <View style={{height: "62%"}}>
         <Timeline toggleNote={() => setShowNote(!showNote)} supabase={supabase} />
       </View>
       <View style={{height: "25%" }}>

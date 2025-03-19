@@ -1,45 +1,26 @@
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView, View, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import Avatar from "@/components/ui/Avatar";
+import { signOut } from "@/components/utils/client";
+import {LineItem, LineItemWithButton} from "@/components/ui/ProfileLineItems";
 
 interface LineItemProps {
   title: any;
   value: any;
 }
 
-const LineItem: React.FC<LineItemProps> = ({ title, value }) => {
-  return (
-    <View
-      style={{
-        width: "90%",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        position: "relative",
-        borderBottomWidth: 0.5,
-        borderColor: "#6646EC",
-        marginBottom: 26,
-      }}
-    >
-      <ThemedText style={{ fontSize: 14, color: "#575453" }}>
-        {title}
-      </ThemedText>
-      <ThemedText style={{ fontSize: 14, color: "black" }}>{value}</ThemedText>
-    </View>
-  );
-};
 
-export default function AccountScreen() {
+export default function Profile() {
   const sections = {
-    Name: "Oleg Moshkovich",
-    Username: "@oleg",
+    Name: "User Name",
+    Username: "@user",
     Password: "********",
-    'Phone number': "+13473244776",
-    Email: "oleg@cadence.day",
+    'Phone number': "+11111111111",
+    Email: "user@cadence.day",
     Notifications: ">",
     'Subscription plan': "Free >",
-    // Two_factor_authentication: "Enabled >",
   };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
       <Avatar />
@@ -66,7 +47,7 @@ export default function AccountScreen() {
           <ThemedText
             style={{
               fontSize: 11,
-              marginTop: 20,
+              marginTop: 10,
               color: "#575453",
               alignSelf: "flex-start",
               letterSpacing: 2,
@@ -76,6 +57,7 @@ export default function AccountScreen() {
           </ThemedText>
         </View>
         <LineItem key="two-factor" title={"Two factor authentication"} value={"Enabled >"} />
+        <LineItemWithButton key="sign-out" title={"Account"} value={"Sign out"} callBack={signOut} />
       </View>
     </SafeAreaView>
   );

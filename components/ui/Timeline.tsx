@@ -182,14 +182,6 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
     >
       <ScrollView
         horizontal
-        // ref={(ref) => {
-        //   if (ref) {
-        //     const currentHour = new Date().getHours();
-        //     const currentMinute = new Date().getMinutes();
-        //     const currentIndex = currentHour * 2 + (currentMinute >= 30 ? 1 : 0);
-        //     ref.scrollTo({ x: currentIndex * 49, animated: true }); // 49 = width(45) + marginHorizontal(2 * 2)
-        //   }
-        // }}
         contentContainerStyle={{
           flexDirection: "row", 
           paddingHorizontal: 10,
@@ -229,7 +221,7 @@ const Timeline: React.FC<TimesliceModalProps> = ({ supabase, toggleNote }) => {
                 activeOpacity={1}
                 style={{
                   width: 45,
-                  height: '90%',
+                  height: '93%',
                   borderWidth: 1,
                   borderColor: "#6646EC",
                   marginHorizontal: 2,
