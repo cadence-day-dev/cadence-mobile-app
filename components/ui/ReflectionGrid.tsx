@@ -46,14 +46,19 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
   const hoursScrollViewRef = React.useRef<ScrollView>(null);
   const gridScrollViewRef = React.useRef<ScrollView>(null);
 
-  const handleScroll = (event: any, isHourScroll: boolean) => {
+  const handleScroll = (event: any) => {
     const y = event.nativeEvent.contentOffset.y;
-    if (isHourScroll) {
-      gridScrollViewRef.current?.scrollTo({ y, animated: false });
-    } else {
-      hoursScrollViewRef.current?.scrollTo({ y, animated: false });
-    }
+    gridScrollViewRef.current?.scrollTo({ y, animated: false });
   };
+
+  // Add effect for initial scroll position
+  useEffect(() => {
+    // Calculate position for 7am: (7 - startHour) * 2 slots * 20 pixels per slot
+    const scrollToPosition = (7 - startHour) * 2 * 19;
+    setTimeout(() => {
+      hoursScrollViewRef.current?.scrollTo({ y: scrollToPosition, animated: true });
+    }, 100);
+  }, [startHour]);
 
   useEffect(() => {
     const today = new Date();
@@ -129,7 +134,7 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
           <View style={styles.headerSpacer} />
           <ScrollView
             ref={hoursScrollViewRef}
-            onScroll={(e) => handleScroll(e, true)}
+            onScroll={handleScroll}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
           >
@@ -158,8 +163,7 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
 
           <ScrollView
             ref={gridScrollViewRef}
-            onScroll={(e) => handleScroll(e, false)}
-            scrollEventThrottle={16}
+            scrollEnabled={false}
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.grid}>
