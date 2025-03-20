@@ -10,38 +10,86 @@ import {
 import { useEffect } from "react";
 import { fetchUserTimeSlicesNew } from "../utils/client";
 
-const ScheduleGrid = () => {
-  const [reflectionTimeslices, setReflectionTimeslices] = useState([]);
-  useEffect(() => {
-    console.log('reflection timeslices', reflectionTimeslices)
-  }, [reflectionTimeslices]);
+interface Timeslice {
+  activity: {
+    activity_id: string;
+    color: string;
+    created_at: string;
+    name: string;
+    status: string;
+    updated_at: string;
+    version_no: number;
+    weight: number;
+  };
+  created_at: string;
+  end_time: string;
+  note: {
+    media: any;
+    state: any;
+  };
+  start_time: string;
+  timeslice_id: string;
+  updated_at: string;
+  version_no: number;
+}
+
+interface ScheduleGridProps {
+  fromDate: Date;
+  toDate: Date;
+}
+
+const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
+  const [reflectionTimeslices, setReflectionTimeslices] = useState<Timeslice[]>([]);
+  const [organizedTimeslices, setOrganizedTimeslices] = useState<{ [key: string]: Timeslice[] }>({});
+  const [startHour, setStartHour] = useState(9);
+  const [endHour, setEndHour] = useState(24);
+
+
 
   useEffect(() => {
-    fetchWeeklyTimeslices();
-  }, []);
-  
-  const fetchWeeklyTimeslices = async () => {
-    const toDate = new Date();
-    const fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() - 7);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    
+    const getTimeslices = async () => {
+      const timeslicesForWeek = await fetchPeriodTimeslices(fromDate, toDate);
+      // Organize timeslices by date
+      const organizedTimeslices = timeslicesForWeek.reduce((acc: { [key: string]: Timeslice[] }, timeslice: Timeslice) => {
+        const date = new Date(timeslice.start_time).toLocaleDateString();
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(timeslice);
+        return acc;
+      }, {});
+      
+      console.log('organized timeslices', organizedTimeslices);
+      setReflectionTimeslices(timeslicesForWeek);
+      setOrganizedTimeslices(organizedTimeslices);
+    };
 
+    getTimeslices();
+  }, [fromDate, toDate]);
+
+  const fetchPeriodTimeslices = async (fromDate: Date, toDate: Date) => {
     const timeslices = await fetchUserTimeSlicesNew({
       from_time: fromDate.toISOString(),
       to_time: toDate.toISOString(),
     });
-    setReflectionTimeslices(timeslices);
+    return timeslices;
   };
 
-  
-  const dates = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(1);
-    date.setDate(date.getDate() + i);
-    return `${date.getDate()}/${date.getMonth() + 1}`;
+  const dates = Array.from({ length: Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 }, (_, i) => {
+    const date = new Date(fromDate);
+    date.setDate(fromDate.getDate() + i);
+    return {
+      display: `${date.getMonth() + 1}/${date.getDate()}`,
+      full: date.toLocaleDateString()
+    };
   });
 
-  const hours = Array.from({ length: 30 }, (_, i) => {
-    const hour = Math.floor(i / 2) + 9;
+  const hours = Array.from({ length: (endHour - startHour) * 2 }, (_, i) => {
+    const hour = Math.floor(i / 2) + startHour;
     return `${hour}`;
   });
 
@@ -69,11 +117,10 @@ const ScheduleGrid = () => {
         </View>
         <View style={styles.grid}>
           {dates.map((date, dateIndex) => (
-            <View key={dateIndex} >
-              <Text style={styles.dateHeader}>{date}</Text>
+            <View key={dateIndex}>
+              <Text style={styles.dateHeader}>{date.display}</Text>
               {hours.map((hour, hourIndex) => {
-                const offset = Math.floor(hourIndex / 4);
-                const colorIndex = (hourIndex - offset) % colors.length;
+                const timeslice = organizedTimeslices[date.full]?.[hourIndex];
                 return (
                   <TouchableOpacity
                     key={hourIndex}
@@ -82,14 +129,9 @@ const ScheduleGrid = () => {
                       {
                         borderWidth: 0.5,
                         borderColor: "#6646EC",
-                        backgroundColor: colors[colorIndex],
+                        backgroundColor: timeslice?.activity?.color || "transparent",
                       },
                     ]}
-                    onPress={() => {
-                      setSelectedHour(hour);
-                      setSelectedDate(date);
-                      setModalVisible(true);
-                    }}
                   />
                 );
               })}
@@ -147,7 +189,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   cell: {
-    width: 49,
+    width: 42,
     height: 18,
     justifyContent: "center",
     alignItems: "center",
