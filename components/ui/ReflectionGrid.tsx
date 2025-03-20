@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
-  AppState,
 } from "react-native";
 import { useEffect } from "react";
 import { fetchUserTimeSlicesNew } from "../utils/client";
@@ -47,13 +46,9 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
   const hoursScrollViewRef = React.useRef<ScrollView>(null);
   const gridScrollViewRef = React.useRef<ScrollView>(null);
 
-  const handleScroll = (event: any, isHourScroll: boolean) => {
+  const handleScroll = (event: any) => {
     const y = event.nativeEvent.contentOffset.y;
-    if (isHourScroll) {
-      gridScrollViewRef.current?.scrollTo({ y, animated: false });
-    } else {
-      hoursScrollViewRef.current?.scrollTo({ y, animated: false });
-    }
+    gridScrollViewRef.current?.scrollTo({ y, animated: false });
   };
 
   // Add effect for initial scroll position
@@ -71,9 +66,7 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
     yesterday.setDate(today.getDate() - 1);
     
     const getTimeslices = async () => {
-      console.log("Fetching timeslices...", { fromDate, toDate });
       const timeslicesForWeek = await fetchPeriodTimeslices(fromDate, toDate);
-      console.log("Fetched timeslices count:", timeslicesForWeek.length);
       
       // Organize timeslices by date and hour slots
       const organizedTimeslices = timeslicesForWeek.reduce((acc: { [key: string]: Timeslice[] }, timeslice: Timeslice) => {
@@ -102,24 +95,9 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
       
       setReflectionTimeslices(timeslicesForWeek);
       setOrganizedTimeslices(organizedTimeslices);
-      console.log("Updated timeslices state");
     };
 
-    // Initial fetch
     getTimeslices();
-
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
-      console.log("AppState changed to:", nextAppState);
-      if (nextAppState === 'active') {
-        console.log("App became active, refreshing timeslices");
-        getTimeslices();
-      }
-    });
-
-    return () => {
-      console.log("Cleaning up AppState subscription");
-      subscription.remove();
-    };
   }, [fromDate, toDate, startHour, endHour]);
 
   const fetchPeriodTimeslices = async (fromDate: Date, toDate: Date) => {
@@ -156,7 +134,7 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
           <View style={styles.headerSpacer} />
           <ScrollView
             ref={hoursScrollViewRef}
-            onScroll={(e) => handleScroll(e, true)}
+            onScroll={handleScroll}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
           >
@@ -185,8 +163,7 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
 
           <ScrollView
             ref={gridScrollViewRef}
-            onScroll={(e) => handleScroll(e, false)}
-            scrollEventThrottle={16}
+            scrollEnabled={false}
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.grid}>
