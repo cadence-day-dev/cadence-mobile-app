@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   messageInputContainer: {
     position: "absolute",
-    height: 8,
+    height: 76,
     left: 0,
     right: 0,
     bottom: 0,
