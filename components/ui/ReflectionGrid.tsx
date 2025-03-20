@@ -41,9 +41,8 @@ interface ScheduleGridProps {
 const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
   const [reflectionTimeslices, setReflectionTimeslices] = useState<Timeslice[]>([]);
   const [organizedTimeslices, setOrganizedTimeslices] = useState<{ [key: string]: Timeslice[] }>({});
-  const [startHour, setStartHour] = useState(9);
+  const [startHour, setStartHour] = useState(10);
   const [endHour, setEndHour] = useState(24);
-
 
 
   useEffect(() => {
@@ -53,23 +52,38 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
     
     const getTimeslices = async () => {
       const timeslicesForWeek = await fetchPeriodTimeslices(fromDate, toDate);
-      // Organize timeslices by date
+      
+      // Organize timeslices by date and hour slots
       const organizedTimeslices = timeslicesForWeek.reduce((acc: { [key: string]: Timeslice[] }, timeslice: Timeslice) => {
-        const date = new Date(timeslice.start_time).toLocaleDateString();
+        const startTime = new Date(timeslice.start_time);
+        const endTime = new Date(timeslice.end_time);
+        const date = startTime.toLocaleDateString();
+        
         if (!acc[date]) {
-          acc[date] = [];
+          // Initialize array with empty slots for each half hour
+          acc[date] = Array((endHour - startHour) * 2).fill(null);
         }
-        acc[date].push(timeslice);
+
+        // Calculate slot indices
+        const startSlot = (startTime.getHours() - startHour) * 2 + Math.floor(startTime.getMinutes() / 30);
+        const endSlot = (endTime.getHours() - startHour) * 2 + Math.ceil(endTime.getMinutes() / 30);
+
+        // Fill all slots between start and end with the timeslice
+        for (let slot = startSlot; slot < endSlot && slot < (endHour - startHour) * 2; slot++) {
+          if (slot >= 0) {
+            acc[date][slot] = timeslice;
+          }
+        }
+
         return acc;
       }, {});
       
-      console.log('organized timeslices', organizedTimeslices);
       setReflectionTimeslices(timeslicesForWeek);
       setOrganizedTimeslices(organizedTimeslices);
     };
 
     getTimeslices();
-  }, [fromDate, toDate]);
+  }, [fromDate, toDate, startHour, endHour]);
 
   const fetchPeriodTimeslices = async (fromDate: Date, toDate: Date) => {
     const timeslices = await fetchUserTimeSlicesNew({
@@ -93,7 +107,6 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
     return `${hour}`;
   });
 
-  const colors = ["transparent"];
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [, setSelectedHour] = useState<string | null>(null);
@@ -103,41 +116,45 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
     <ScrollView horizontal style={{ backgroundColor: "#D9D9D9" }}>
       <View style={styles.container}>
         <View style={styles.hourColumn}>
-          {hours.map((hour, index) => (
-            <View
-              key={index}
-              style={[
-                styles.hourCell,
-                index % 2 !== 0 && styles.transparentCell, // Apply transparency to every 30-minute increment
-              ]}
-            >
-              <Text style={styles.hourText}>{index % 2 === 0 ? hour : ""}</Text>
-            </View>
-          ))}
+          <ScrollView>
+            {hours.map((hour, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.hourCell,
+                  index % 2 !== 0 && styles.transparentCell,
+                ]}
+              >
+                <Text style={styles.hourText}>{index % 2 === 0 ? hour : ""}</Text>
+              </View>
+            ))}
+          </ScrollView>
         </View>
-        <View style={styles.grid}>
-          {dates.map((date, dateIndex) => (
-            <View key={dateIndex}>
-              <Text style={styles.dateHeader}>{date.display}</Text>
-              {hours.map((hour, hourIndex) => {
-                const timeslice = organizedTimeslices[date.full]?.[hourIndex];
-                return (
-                  <TouchableOpacity
-                    key={hourIndex}
-                    style={[
-                      styles.cell,
-                      {
-                        borderWidth: 0.5,
-                        borderColor: "#6646EC",
-                        backgroundColor: timeslice?.activity?.color || "transparent",
-                      },
-                    ]}
-                  />
-                );
-              })}
-            </View>
-          ))}
-        </View>
+        <ScrollView>
+          <View style={styles.grid}>
+            {dates.map((date, dateIndex) => (
+              <View key={dateIndex}>
+                <Text style={styles.dateHeader}>{date.display}</Text>
+                {hours.map((hour, hourIndex) => {
+                  const timeslice = organizedTimeslices[date.full]?.[hourIndex];
+                  return (
+                    <TouchableOpacity
+                      key={hourIndex}
+                      style={[
+                        styles.cell,
+                        {
+                          borderWidth: 0.5,
+                          borderColor: "#6646EC",
+                          backgroundColor: timeslice?.activity?.color || "transparent",
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       </View>
       <Modal
         transparent={true}
@@ -163,11 +180,13 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    height: "100%",
   },
   hourColumn: {
     width: 24,
     marginRight: 4,
     marginTop: 27,
+    height: "100%",
   },
   hourCell: {
     height: 18,
@@ -176,10 +195,11 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   transparentCell: {
-    backgroundColor: "transparent", // Make the cell transparent
+    backgroundColor: "transparent",
   },
   grid: {
     flexDirection: "row",
+    paddingBottom: 20,
   },
   dateHeader: {
     fontSize: 9,
