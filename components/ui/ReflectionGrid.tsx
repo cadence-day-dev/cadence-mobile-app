@@ -41,9 +41,19 @@ interface ScheduleGridProps {
 const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
   const [reflectionTimeslices, setReflectionTimeslices] = useState<Timeslice[]>([]);
   const [organizedTimeslices, setOrganizedTimeslices] = useState<{ [key: string]: Timeslice[] }>({});
-  const [startHour, setStartHour] = useState(10);
+  const [startHour, setStartHour] = useState(0);
   const [endHour, setEndHour] = useState(24);
+  const hoursScrollViewRef = React.useRef<ScrollView>(null);
+  const gridScrollViewRef = React.useRef<ScrollView>(null);
 
+  const handleScroll = (event: any, isHourScroll: boolean) => {
+    const y = event.nativeEvent.contentOffset.y;
+    if (isHourScroll) {
+      gridScrollViewRef.current?.scrollTo({ y, animated: false });
+    } else {
+      hoursScrollViewRef.current?.scrollTo({ y, animated: false });
+    }
+  };
 
   useEffect(() => {
     const today = new Date();
@@ -113,10 +123,16 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
   const [, setSelectedDate] = useState<string | null>(null);
 
   return (
-    <ScrollView horizontal style={{ backgroundColor: "#D9D9D9" }}>
+    <ScrollView horizontal style={{ backgroundColor: "#D9D9D9" }} showsHorizontalScrollIndicator={false}>
       <View style={styles.container}>
         <View style={styles.hourColumn}>
-          <ScrollView>
+          <View style={styles.headerSpacer} />
+          <ScrollView
+            ref={hoursScrollViewRef}
+            onScroll={(e) => handleScroll(e, true)}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+          >
             {hours.map((hour, index) => (
               <View
                 key={index}
@@ -130,31 +146,46 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
             ))}
           </ScrollView>
         </View>
-        <ScrollView>
-          <View style={styles.grid}>
+
+        <View style={styles.gridContainer}>
+          <View style={styles.dateHeaderRow}>
             {dates.map((date, dateIndex) => (
-              <View key={dateIndex}>
+              <View key={dateIndex} style={styles.dateHeaderCell}>
                 <Text style={styles.dateHeader}>{date.display}</Text>
-                {hours.map((hour, hourIndex) => {
-                  const timeslice = organizedTimeslices[date.full]?.[hourIndex];
-                  return (
-                    <TouchableOpacity
-                      key={hourIndex}
-                      style={[
-                        styles.cell,
-                        {
-                          borderWidth: 0.5,
-                          borderColor: "#6646EC",
-                          backgroundColor: timeslice?.activity?.color || "transparent",
-                        },
-                      ]}
-                    />
-                  );
-                })}
               </View>
             ))}
           </View>
-        </ScrollView>
+
+          <ScrollView
+            ref={gridScrollViewRef}
+            onScroll={(e) => handleScroll(e, false)}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.grid}>
+              {dates.map((date, dateIndex) => (
+                <View key={dateIndex} style={styles.dateColumn}>
+                  {hours.map((hour, hourIndex) => {
+                    const timeslice = organizedTimeslices[date.full]?.[hourIndex];
+                    return (
+                      <TouchableOpacity
+                        key={hourIndex}
+                        style={[
+                          styles.cell,
+                          {
+                            borderWidth: 0.5,
+                            borderColor: "#6646EC",
+                            backgroundColor: timeslice?.activity?.color || "transparent",
+                          },
+                        ]}
+                      />
+                    );
+                  })}
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
       </View>
       <Modal
         transparent={true}
@@ -185,8 +216,11 @@ const styles = StyleSheet.create({
   hourColumn: {
     width: 24,
     marginRight: 4,
-    marginTop: 27,
     height: "100%",
+    zIndex: 1,
+  },
+  headerSpacer: {
+    height: 37,
   },
   hourCell: {
     height: 18,
@@ -197,9 +231,28 @@ const styles = StyleSheet.create({
   transparentCell: {
     backgroundColor: "transparent",
   },
+  gridContainer: {
+    flex: 1,
+    height: "100%",
+  },
+  dateHeaderRow: {
+    flexDirection: "row",
+    backgroundColor: "#D9D9D9",
+    position: "absolute",
+    top: 0,
+    zIndex: 2,
+  },
+  dateHeaderCell: {
+    width: 42,
+    marginRight: 2,
+  },
   grid: {
     flexDirection: "row",
+    paddingTop: 37,
     paddingBottom: 20,
+  },
+  dateColumn: {
+    flexDirection: "column",
   },
   dateHeader: {
     fontSize: 9,
