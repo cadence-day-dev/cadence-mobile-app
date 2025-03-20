@@ -22,6 +22,7 @@ const BottomDialog: React.FC<BottomDialogProps> = ({
       transparent
       animationType="slide"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <View style={styles.overlay}>
         <View style={styles.container}>

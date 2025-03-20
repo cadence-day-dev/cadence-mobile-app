@@ -60,6 +60,8 @@ export default function RootLayout() {
           borderTopWidth: 1,
           borderTopColor: '#FFFFFF',
           height: 76,
+          zIndex: 1000,
+          elevation: 1000, // for Android
         },
         headerShown: false,
       }}

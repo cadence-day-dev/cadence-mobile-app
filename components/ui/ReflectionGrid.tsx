@@ -128,7 +128,7 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
   const [, setSelectedDate] = useState<string | null>(null);
 
   return (
-    <ScrollView horizontal style={{ backgroundColor: "#D9D9D9" }} showsHorizontalScrollIndicator={false}>
+    <View style={{ backgroundColor: "#D9D9D9" }}>
       <View style={styles.container}>
         <View style={styles.hourColumn}>
           <View style={styles.headerSpacer} />
@@ -208,7 +208,7 @@ const ScheduleGrid = ({ fromDate, toDate }: ScheduleGridProps) => {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 };
 
